@@ -2,6 +2,10 @@
     include("index.html");
     include("database.php");
 
+    session_start();
+    $_SESSION["validate"] = 0;
+
+
     if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         $username = filter_input(INPUT_POST, "username", FILTER_SANITIZE_SPECIAL_CHARS);
@@ -12,16 +16,17 @@
 
             $result = $conn->query($query);
 
-            if($result->num_rows ==1){ 
-                session_start();
+            if($result->num_rows ==1){;
                 $_SESSION["username"] = $username;
                 $_SESSION["password"] = $password;
 
                 if(!strcmp($username, "admin")){
+                    $_SESSION["validate"] = 1;
                     header("Location: Aacmcp.php");
                     
                 }
                 else{
+                    $_SESSION["validate"] = 2;
                     header("Location: acmcp.php");
                 }
 
@@ -29,7 +34,6 @@
                 exit();
             }
             else{
-                session_start();
                 $_SESSION["errormessage"] = "No such User";
                 header("Location: loginfailed.php");
                 exit();
@@ -37,12 +41,10 @@
 
         }
         elseif(empty($username)){
-            session_start();
             $_SESSION["errormessage"] = "Enter an Username";
             header("Location: loginfailed.php");
         }
         elseif(empty($password)){
-            session_start();
             $_SESSION["errormessage"] = "Enter a Password";
             header("Location: loginfailed.php");
             

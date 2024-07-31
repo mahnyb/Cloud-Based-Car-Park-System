@@ -1,4 +1,10 @@
 <?php
     session_start();
-    include("acmcp.html");
+    if($_SESSION["validate"] == 2){
+        include("acmcp.html");
+    }
+    else{
+        header("Location: index.php");
+    }
+    
 ?>
