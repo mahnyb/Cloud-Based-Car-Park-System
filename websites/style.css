@@ -49,3 +49,28 @@ body{
 .navbar li{
     float: left;
 }
+
+.usertable{
+    background-color: aliceblue;
+    border-color: blue;
+
+}
+
+.usertable th{
+    background-color: aqua;
+
+}
+
+.usertable td{
+    background-color: aliceblue;
+    
+}
+
+.parkbutton{
+    width: 100px;
+    height: 100px;
+    margin-left: 50px;
+    text-decoration: white;
+    background-color: aqua;
+    border-style: double;
+}

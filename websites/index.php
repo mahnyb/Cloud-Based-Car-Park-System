@@ -16,9 +16,14 @@
 
             $result = $conn->query($query);
 
+            $id = $result->fetch_assoc();
+
+
+
             if($result->num_rows ==1){;
                 $_SESSION["username"] = $username;
                 $_SESSION["password"] = $password;
+                $_SESSION["id"] = $id["id"];
 
                 if(!strcmp($username, "admin")){
                     $_SESSION["validate"] = 1;

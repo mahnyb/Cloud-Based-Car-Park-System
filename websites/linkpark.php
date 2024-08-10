@@ -7,14 +7,18 @@
         $query = 'SELECT * FROM login';
         $result = $conn->query($query);
 
+        if(isset($_GET["id"])){
+           
+            $id = $_GET["id"];
+      
+        }
+
 
         echo 
         "<div class = 'container'>
             <br>
             <br> 
-            <h2> Users </h2>
-            <br>
-            <a class = 'btn btn-primary' href = 'adduser.php' role = 'button'> Add User </a>
+            <h2> Link Park </h2>
             <br>
             <br>
             <table class = 'usertable' border = '2'>
@@ -36,8 +40,7 @@
                             <td> $row[username] </td>
                             <td> $row[password] </td>
                             <td> 
-                                <a class = 'btn btn-primary btn-sm' href =  'edituser.php?id=$row[id]'> Edit </a>
-                                <a class = 'btn btn-danger btn-sm' href =  'deleteuser.php?id=$row[id]'> Delete </a>
+                                <a class = 'btn btn-primary btn-sm' href =  'linked.php?id=$row[id]/$id'> Link </a>
                             </td>
                         </tr>";
             }
