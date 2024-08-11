@@ -74,3 +74,9 @@ body{
     background-color: aqua;
     border-style: double;
 }
+
+.piechart {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+}
