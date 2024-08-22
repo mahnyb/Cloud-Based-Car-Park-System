@@ -4,14 +4,14 @@ import pytesseract
 import cv2
 import numpy as np
 
-# Roboflow API details
+# roboflow API details
 API_KEY = "bVao5SGcDuY8aZ4OHrwe"
 PROJECT_ID = "car-plate-detection-2efss"
-VERSION = "2024-07-26"  
+VERSION = "2024-07-26 7:41am"  
 
 def detect_car_plate(image_path):
     """
-    Detects car plate in an image using Roboflow API.
+    detects car plate in an image using Roboflow API.
     """
     try:
         with open(image_path, 'rb') as image_file:
@@ -20,7 +20,7 @@ def detect_car_plate(image_path):
                 files={"file": image_file},
                 headers={"Content-Type": "application/x-www-form-urlencoded"}
             )
-            response.raise_for_status()  # Raise an HTTPError if the response was unsuccessful
+            response.raise_for_status()  # raise an HTTPError if the response was unsuccessful
             response_json = response.json()
             return response_json
     except requests.exceptions.RequestException as e:
@@ -29,7 +29,7 @@ def detect_car_plate(image_path):
 
 def extract_plate_info(predictions):
     """
-    Extracts bounding box information from predictions.
+    extract bounding box information from predictions
     """
     if not predictions:
         print("No predictions found in the response.")
@@ -50,12 +50,12 @@ def extract_plate_info(predictions):
 
 def crop_image(image_path, bounding_box):
     """
-    Crops the detected car plate area from the image.
+    crop the detected car plate area from the image
     """
     try:
         image = Image.open(image_path)
         cropped_image = image.crop(bounding_box)
-        cropped_image.show()  # Optional: Remove this line for production use
+        cropped_image.show()  
         return cropped_image
     except Exception as e:
         print(f"Error cropping image: {e}")
@@ -63,7 +63,7 @@ def crop_image(image_path, bounding_box):
 
 def extract_plate_number(cropped_image):
     """
-    Applies OCR to extract the car plate number from the cropped image.
+    apply OCR to extract the car plate number from the cropped image
     """
     try:
         cropped_image_cv = cv2.cvtColor(np.array(cropped_image), cv2.COLOR_RGB2BGR)
