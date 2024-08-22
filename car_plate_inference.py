@@ -7,7 +7,7 @@ import numpy as np
 # Roboflow API details
 API_KEY = "bVao5SGcDuY8aZ4OHrwe"
 PROJECT_ID = "car-plate-detection-2efss"
-VERSION = "1"  # Use the correct version number without timestamp if necessary
+VERSION = "2024-07-26"  
 
 def detect_car_plate(image_path):
     """
