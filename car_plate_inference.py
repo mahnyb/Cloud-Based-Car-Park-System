@@ -3,11 +3,15 @@ from PIL import Image
 import pytesseract
 import cv2
 import numpy as np
+from dotenv import load_dotenv
+import os as os
+
+load_dotenv() # loads variable from .env file
 
 # roboflow API details
-API_KEY = "bVao5SGcDuY8aZ4OHrwe"
+API_KEY = os.getenv('API_KEY')
 PROJECT_ID = "car-plate-detection-2efss"
-VERSION = "2024-07-26 7:41am"  
+VERSION = "v1"  
 
 def detect_car_plate(image_path):
     """
