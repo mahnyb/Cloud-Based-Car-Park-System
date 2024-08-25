@@ -4,11 +4,14 @@ import pytesseract
 import cv2
 import numpy as np
 import os as os
+from dotenv import load_dotenv
+
+load_dotenv() # loads variable from .env file
 
 # roboflow API details
-API_KEY = "bVao5SGcDuY8aZ4OHrwe"
-PROJECT_ID = "car-plate-detection-2efss"
-VERSION = "1"  
+API_KEY = os.getenv('API_KEY')
+PROJECT_ID = os.getenv('PROJECT_ID')
+VERSION = os.getenv('VERSION')
 
 def detect_car_plate(image_path):
     """
@@ -96,5 +99,5 @@ def main(image_path):
         print("No predictions or invalid response.")
 
 if __name__ == "__main__":
-    IMAGE_PATH = "Plate (292).jpeg"
+    IMAGE_PATH = "test.jpg"
     main(IMAGE_PATH)
