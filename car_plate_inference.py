@@ -3,33 +3,31 @@ from PIL import Image
 import pytesseract
 import cv2
 import numpy as np
-from dotenv import load_dotenv
 import os as os
 
-load_dotenv() # loads variable from .env file
-
 # roboflow API details
-API_KEY = os.getenv('API_KEY')
+API_KEY = "bVao5SGcDuY8aZ4OHrwe"
 PROJECT_ID = "car-plate-detection-2efss"
-VERSION = "v1"  
+VERSION = "1"  
 
 def detect_car_plate(image_path):
     """
-    detects car plate in an image using Roboflow API.
+    Detects car plate in an image using Roboflow API.
     """
     try:
         with open(image_path, 'rb') as image_file:
             response = requests.post(
-                f"https://detect.roboflow.com/{PROJECT_ID}/{VERSION}?api_key={API_KEY}",
-                files={"file": image_file},
-                headers={"Content-Type": "application/x-www-form-urlencoded"}
+                f"https://detect.roboflow.com/{PROJECT_ID}/{VERSION}",
+                params={"api_key": API_KEY},
+                files={"file": image_file}
             )
-            response.raise_for_status()  # raise an HTTPError if the response was unsuccessful
+            response.raise_for_status()  # Raise an HTTPError if the response was unsuccessful
             response_json = response.json()
             return response_json
     except requests.exceptions.RequestException as e:
         print(f"Error during API request: {e}")
         return None
+
 
 def extract_plate_info(predictions):
     """
