@@ -3,12 +3,13 @@ from PIL import Image
 import pytesseract
 import cv2
 import numpy as np
-import os as os
+import os
+import re
 from dotenv import load_dotenv
 
-load_dotenv() # loads variable from .env file
+load_dotenv()  # Loads variables from .env file
 
-# roboflow API details
+# Roboflow API details
 API_KEY = os.getenv('API_KEY')
 PROJECT_ID = os.getenv('PROJECT_ID')
 VERSION = os.getenv('VERSION')
@@ -31,10 +32,9 @@ def detect_car_plate(image_path):
         print(f"Error during API request: {e}")
         return None
 
-
 def extract_plate_info(predictions):
     """
-    extract bounding box information from predictions
+    Extract bounding box information from predictions.
     """
     if not predictions:
         print("No predictions found in the response.")
@@ -44,23 +44,39 @@ def extract_plate_info(predictions):
         x, y, width, height = (prediction['x'], prediction['y'], prediction['width'], prediction['height'])
         print(f"Bounding Box - x: {x}, y: {y}, width: {width}, height: {height}")
 
-        x_min = int(x - width / 2)
-        y_min = int(y - height / 2)
-        x_max = int(x + width / 2)
-        y_max = int(y + height / 2)
+        # Adjust the bounding box slightly to ensure the plate is fully captured
+        padding_x = 10  # Slight horizontal padding
+        padding_y = 5   # Slight vertical padding
+
+        x_min = int(x - width / 2) - padding_x
+        y_min = int(y - height / 2) - padding_y
+        x_max = int(x + width / 2) + padding_x
+        y_max = int(y + height / 2) + padding_y
 
         return (x_min, y_min, x_max, y_max)
     
     return None
 
+def preprocess_image(image):
+    """
+    Preprocess the image to enhance OCR accuracy.
+    """
+    try:
+        gray_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
+        _, thresh_image = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        return thresh_image
+    except Exception as e:
+        print(f"Error during image preprocessing: {e}")
+        return None
+
 def crop_image(image_path, bounding_box):
     """
-    crop the detected car plate area from the image
+    Crop the detected car plate area from the image.
     """
     try:
         image = Image.open(image_path)
         cropped_image = image.crop(bounding_box)
-        cropped_image.show()  
+        cropped_image.show()
         return cropped_image
     except Exception as e:
         print(f"Error cropping image: {e}")
@@ -68,13 +84,38 @@ def crop_image(image_path, bounding_box):
 
 def extract_plate_number(cropped_image):
     """
-    apply OCR to extract the car plate number from the cropped image
+    Apply OCR to extract the car plate number from the cropped image.
     """
     try:
-        cropped_image_cv = cv2.cvtColor(np.array(cropped_image), cv2.COLOR_RGB2BGR)
-        plate_number = pytesseract.image_to_string(cropped_image_cv, config='--psm 8')
+        preprocessed_image = preprocess_image(cropped_image)
+        plate_number = pytesseract.image_to_string(preprocessed_image, config='--psm 7')
         plate_number = plate_number.strip()
-        return plate_number
+
+        # Remove any non-alphanumeric characters (except spaces)
+        plate_number = ''.join(char if char.isalnum() or char.isspace() else '' for char in plate_number)
+
+        # Use regex to match the extracted plate number to one of the known Turkish plate patterns
+        plate_pattern = re.compile(r'''
+            ^(\d{2})\s?([A-Z]{1,3})\s?(\d{2,5})$  # Matches all Turkish plate formats
+        ''', re.VERBOSE)
+
+        match = plate_pattern.search(plate_number)
+        if match:
+            # Format the plate number consistently
+            formatted_plate = f"{match.group(1)} {match.group(2)} {match.group(3)}"
+            return formatted_plate
+        else:
+            # Attempt to fix common OCR errors
+            if len(plate_number) > 2 and not plate_number[:2].isdigit():
+                plate_number = plate_number[1:]  # Remove the first character if it's incorrect
+            
+            match = plate_pattern.search(plate_number)
+            if match:
+                formatted_plate = f"{match.group(1)} {match.group(2)} {match.group(3)}"
+                return formatted_plate
+            else:
+                print("No valid plate pattern detected. Returning the adjusted OCR output.")
+                return plate_number
     except Exception as e:
         print(f"Error during OCR extraction: {e}")
         return None
@@ -90,14 +131,14 @@ def main(image_path):
                 if plate_number:
                     print(f"Extracted Plate Number: {plate_number}")
                 else:
-                    print("Failed to extract the plate number.")
+                    print("OCR failed to extract a plate number. The image might be too blurry or the plate might not be clearly visible.")
             else:
-                print("Failed to crop the image.")
+                print("Failed to crop the image. The bounding box might be incorrect.")
         else:
-            print("No bounding box found.")
+            print("No license plate detected in the image.")
     else:
-        print("No predictions or invalid response.")
+        print("No predictions or invalid response from the API.")
 
 if __name__ == "__main__":
-    IMAGE_PATH = "test.jpg"
+    IMAGE_PATH = "test3.jpg"
     main(IMAGE_PATH)
