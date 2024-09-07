@@ -6,6 +6,8 @@ import numpy as np
 import os
 import re
 from dotenv import load_dotenv
+import mysql.connector
+from mysql.connector import Error
 
 load_dotenv()  # Loads variables from .env file
 
@@ -120,7 +122,41 @@ def extract_plate_number(cropped_image):
         print(f"Error during OCR extraction: {e}")
         return None
 
+def create_connection():
+    """
+    Establish a connection to the MySQL database.
+    """
+    try:
+        connection = mysql.connector.connect(
+            host = os.getenv('HOST'),
+            database = os.getenv('DATABASE'),
+            user = os.getenv('ROOT'),
+            password = os.getenv('PASSWORD'),
+            port = os.getenv('PORT')
+        )
+        if connection.is_connected():
+            print("Connected to MySQL database")
+        return connection
+    except Error as e:
+        print(f"Error connecting to MySQL: {e}")
+        return None
+
+def log_car_entry(connection, plate_number):
+    """
+    Log the car entry into the database.
+    """
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('log_entry', [plate_number])
+        connection.commit()
+        print(f"Logged entry for plate number: {plate_number}")
+    except Error as e:
+        print(f"Error logging car entry: {e}")
+
 def main(image_path):
+    """
+    Main function to process the image and log the car entry.
+    """
     response_json = detect_car_plate(image_path)
     if response_json and 'predictions' in response_json:
         bounding_box = extract_plate_info(response_json['predictions'])
@@ -130,6 +166,12 @@ def main(image_path):
                 plate_number = extract_plate_number(cropped_image)
                 if plate_number:
                     print(f"Extracted Plate Number: {plate_number}")
+                    
+                    # Establish database connection and log the car plate
+                    connection = create_connection()
+                    if connection:
+                        log_car_entry(connection, plate_number)
+                        connection.close()
                 else:
                     print("OCR failed to extract a plate number. The image might be too blurry or the plate might not be clearly visible.")
             else:
