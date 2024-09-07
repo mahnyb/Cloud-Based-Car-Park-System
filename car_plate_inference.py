@@ -153,9 +153,21 @@ def log_car_entry(connection, plate_number):
     except Error as e:
         print(f"Error logging car entry: {e}")
 
+def log_car_exit(connection, plate_number):
+    """
+    Log the car exit into the database.
+    """
+    try:
+        cursor = connection.cursor()
+        cursor.callproc('log_exit', [plate_number])
+        connection.commit()
+        print(f"Logged exit for plate number: {plate_number}")
+    except Error as e:
+        print(f"Error logging car exit: {e}")
+
 def main(image_path):
     """
-    Main function to process the image and log the car entry.
+    Main function to process the image and log the car entry or exit.
     """
     response_json = detect_car_plate(image_path)
     if response_json and 'predictions' in response_json:
@@ -166,11 +178,23 @@ def main(image_path):
                 plate_number = extract_plate_number(cropped_image)
                 if plate_number:
                     print(f"Extracted Plate Number: {plate_number}")
-                    
-                    # Establish database connection and log the car plate
+
+                    # Establish database connection
                     connection = create_connection()
                     if connection:
-                        log_car_entry(connection, plate_number)
+                        cursor = connection.cursor()
+
+                        # Check if the plate number already exists in car_entries with null exit_time
+                        cursor.execute("SELECT COUNT(*) FROM car_entries WHERE car_plate = %s AND exit_time IS NULL", (plate_number,))
+                        count = cursor.fetchone()[0]
+
+                        if count > 0:
+                            # If exit log
+                            log_car_exit(connection, plate_number)
+                        else:
+                            # If entry log
+                            log_car_entry(connection, plate_number)
+
                         connection.close()
                 else:
                     print("OCR failed to extract a plate number. The image might be too blurry or the plate might not be clearly visible.")
@@ -181,6 +205,7 @@ def main(image_path):
     else:
         print("No predictions or invalid response from the API.")
 
+
 if __name__ == "__main__":
-    IMAGE_PATH = "test3.jpg"
+    IMAGE_PATH = "test.jpg"
     main(IMAGE_PATH)
