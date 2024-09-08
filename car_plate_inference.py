@@ -17,9 +17,9 @@ PROJECT_ID = os.getenv('PROJECT_ID')
 VERSION = os.getenv('VERSION')
 
 def detect_car_plate(image_path):
-    """
-    Detects car plate in an image using Roboflow API.
-    """
+    
+    # Detects car plate in an image using Roboflow API.
+    
     try:
         with open(image_path, 'rb') as image_file:
             response = requests.post(
@@ -35,9 +35,9 @@ def detect_car_plate(image_path):
         return None
 
 def extract_plate_info(predictions):
-    """
-    Extract bounding box information from predictions.
-    """
+    
+    # Extract bounding box information from predictions.
+    
     if not predictions:
         print("No predictions found in the response.")
         return None
@@ -46,7 +46,7 @@ def extract_plate_info(predictions):
         x, y, width, height = (prediction['x'], prediction['y'], prediction['width'], prediction['height'])
         print(f"Bounding Box - x: {x}, y: {y}, width: {width}, height: {height}")
 
-        # Adjust the bounding box slightly to ensure the plate is fully captured
+        # Adjusting the bounding box slightly to ensure the plate is fully captured
         padding_x = 10  # Slight horizontal padding
         padding_y = 5   # Slight vertical padding
 
@@ -60,9 +60,9 @@ def extract_plate_info(predictions):
     return None
 
 def preprocess_image(image):
-    """
-    Preprocess the image to enhance OCR accuracy.
-    """
+    
+    # Preprocess the image to enhance OCR accuracy.
+    
     try:
         gray_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
         _, thresh_image = cv2.threshold(gray_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
@@ -72,9 +72,9 @@ def preprocess_image(image):
         return None
 
 def crop_image(image_path, bounding_box):
-    """
-    Crop the detected car plate area from the image.
-    """
+    
+    # Crop the detected car plate area from the image.
+    
     try:
         image = Image.open(image_path)
         cropped_image = image.crop(bounding_box)
@@ -85,9 +85,9 @@ def crop_image(image_path, bounding_box):
         return None
 
 def extract_plate_number(cropped_image):
-    """
-    Apply OCR to extract the car plate number from the cropped image.
-    """
+    
+    # Apply OCR to extract the car plate number from the cropped image.
+    
     try:
         preprocessed_image = preprocess_image(cropped_image)
         plate_number = pytesseract.image_to_string(preprocessed_image, config='--psm 7')
@@ -123,9 +123,9 @@ def extract_plate_number(cropped_image):
         return None
 
 def create_connection():
-    """
-    Establish a connection to the MySQL database.
-    """
+    
+    # Establish a connection to the MySQL database.
+    
     try:
         connection = mysql.connector.connect(
             host = os.getenv('HOST'),
@@ -142,9 +142,9 @@ def create_connection():
         return None
 
 def log_car_entry(connection, plate_number):
-    """
-    Log the car entry into the database.
-    """
+    
+    # Log the car entry into the database.
+    
     try:
         cursor = connection.cursor()
         cursor.callproc('log_entry', [plate_number])
@@ -154,9 +154,9 @@ def log_car_entry(connection, plate_number):
         print(f"Error logging car entry: {e}")
 
 def log_car_exit(connection, plate_number):
-    """
-    Log the car exit into the database.
-    """
+    
+    # Log the car exit into the database.
+    
     try:
         cursor = connection.cursor()
         cursor.callproc('log_exit', [plate_number])
@@ -166,9 +166,9 @@ def log_car_exit(connection, plate_number):
         print(f"Error logging car exit: {e}")
 
 def main(image_path):
-    """
-    Main function to process the image and log the car entry or exit.
-    """
+    
+    # Main function to process the image and log the car entry or exit.
+    
     response_json = detect_car_plate(image_path)
     if response_json and 'predictions' in response_json:
         bounding_box = extract_plate_info(response_json['predictions'])
@@ -207,5 +207,5 @@ def main(image_path):
 
 
 if __name__ == "__main__":
-    IMAGE_PATH = "test.jpg"
+    IMAGE_PATH = "test3.jpg"
     main(IMAGE_PATH)
