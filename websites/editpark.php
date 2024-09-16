@@ -30,24 +30,58 @@
             $phslots = $row["slots"];
             $phoccupied = $row["occupied"];
        
-        echo
-        "
-        <form align = center action = 'editpark.php' method= 'post'>
-            <input type = 'hidden' name = 'id' value = '$id'>
-            <label> Edit Name: </label><br>
-            <input type = 'text' name = 'editedname' placeholder = '$phname'><br>
-
-            <label> Edit Slots: </label><br>
-            <input type = 'text' name = 'editedslots' placeholder = '$phslots'><br>
-
-            <label> Edit Occupied Slots: </label><br>
-            <input type = 'text' name = 'editedoccupied' placeholder = '$phoccupied'><br>
-
-            <br>
-            <input type = 'submit' value = 'Edit Park' class = 'btn btn-primary' >
-        </form>
-        <br>
-        ";
+            echo
+            "
+                    <div class='content-body'>
+    
+                <div class='row page-titles mx-0'>
+                    <div class='col-sm-6 p-md-0'></div>
+                </div>
+    
+                <div class='container-fluid'>
+                    <div class='login-bg h-100'>
+                        <br>
+                        <br>
+                        <div class='container h-100'>
+                            <div class='row justify-content-center h-100'>
+                                <div class='col-md-5'>
+                                    <div class='form-input-content'>
+                                        <div class='card card-login'>
+                                            <div class='card-header'>
+                                                <div class='nav-header position-relative  text-center w-100'>
+                                                    <div class='brand-logo'>
+                                                        <a href='javascript:void(0)'>
+                                                            <b class='logo-abbr'>ACMCP</b>
+                                                            <span class='brand-title'><b>Edit Parking Lot</b></span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='card-body'>
+                                                <form action = 'editpark.php' method= 'post'>
+                                                    <div class='form-group mb-4'>
+                                                        <input type = 'hidden' name = 'id' value = '$id'>
+                                                    </div>    
+                                                    <div class='form-group mb-4'>
+                                                        <input type='text' class='form-control rounded-0 bg-transparent' name ='editedname' placeholder='$phname'>
+                                                    </div>
+                                                    <div class='form-group mb-4'>
+                                                        <input type='text' class='form-control rounded-0 bg-transparent' name ='editedslots' placeholder= '$phslots'>
+                                                    </div>
+                                                    <div class='form-group mb-4'>
+                                                        <input type='text' class='form-control rounded-0 bg-transparent' name ='editedoccupied' placeholder= '$phoccupied'>
+                                                    </div>
+                                                    <button class='btn btn-primary btn-block border-0' type='submit'>Edit Park</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ";
 
         }
 
@@ -67,7 +101,11 @@
                 }
                 $query = "UPDATE parks SET name = '$editedname', slots = '$editedslots', occupied = '$editedoccupied' WHERE id = '$id'";
                 $result = $conn2->query($query);
-                header("Location: parkinglotm.php");
+                ?>
+                <script type="text/javascript">
+                window.location.href = 'parkinglotm.php';
+                </script>
+                <?php
             
                 if(!$result) {
                     echo
@@ -83,33 +121,54 @@
             }
             elseif(empty($editedname)){
                 echo
-                "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
-                    <br>
-                    <label style = 'color:white; font-size: large;'> Warning!</label>
-                    <br>
-                    <label style = 'color:white;'> Enter a Name </label>
-                    <hr>
+                "
+                <br>
+                <br>
+                <div class='container-fluid'>
+                    <div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
+                        <br>
+                        <label style = 'color:white; font-size: large;'> Warning!</label>
+                        <br>
+                        <label style = 'color:white;'> Enter Name </label>
+                        <br>
+                        <a class = 'btn btn-danger' href = 'parkinglotm.php' role = 'button'> Proceed </a>
+                        <hr>
+                    </div>
                 </div>";
             }
             elseif(empty($editedslots)){
                 echo
-                "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
-                    <br>
-                    <label style = 'color:white; font-size: large;'> Warning!</label>
-                    <br>
-                    <label style = 'color:white;'> Enter Slots </label>
-                    <hr>
-                </div>";   
+                "
+                <br>
+                <br>
+                <div class='container-fluid'>
+                    <div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
+                        <br>
+                        <label style = 'color:white; font-size: large;'> Warning!</label>
+                        <br>
+                        <label style = 'color:white;'> Enter Slots </label>
+                        <br>
+                        <a class = 'btn btn-danger' href = 'parkinglotm.php' role = 'button'> Proceed </a>
+                        <hr>
+                    </div>
+                </div>";  
             }
             elseif(empty($editedoccupied)){
                 echo
-                "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
-                    <br>
-                    <label style = 'color:white; font-size: large;'> Warning!</label>
-                    <br>
-                    <label style = 'color:white;'> Enter Occupied Slots </label>
-                    <hr>
-                </div>";   
+                "
+                <br>
+                <br>
+                <div class='container-fluid'>
+                    <div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
+                        <br>
+                        <label style = 'color:white; font-size: large;'> Warning!</label>
+                        <br>
+                        <label style = 'color:white;'> Enter Occupied </label>
+                        <br>
+                        <a class = 'btn btn-danger' href = 'parkinglotm.php' role = 'button'> Proceed </a>
+                        <hr>
+                    </div>
+                </div>";  
             }
         }
     
@@ -119,7 +178,7 @@
 
     }
     else{
-        header("Location: index.php");
+        header("Location: login.php");
     }
     
 ?>

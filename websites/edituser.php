@@ -25,21 +25,55 @@
             $phname = $row["username"];
             $phpassword = $row["password"];
        
-        echo
-        "
-        <form align = center action = 'edituser.php' method= 'post'>
-            <input type = 'hidden' name = 'id' value = '$id'>
-            <label> Edit Username: </label><br>
-            <input type = 'text' name = 'editedusername' placeholder = '$phname'><br>
-
-            <label> Edit Password: </label><br>
-            <input type = 'text' name = 'editedpassword' placeholder = '$phpassword'><br>
-
-            <br>
-            <input type = 'submit' value = 'Edit User' class = 'btn btn-primary' >
-        </form>
-        <br>
-        ";
+            echo
+            "
+                    <div class='content-body'>
+    
+                <div class='row page-titles mx-0'>
+                    <div class='col-sm-6 p-md-0'></div>
+                </div>
+    
+                <div class='container-fluid'>
+                    <div class='login-bg h-100'>
+                        <br>
+                        <br>
+                        <div class='container h-100'>
+                            <div class='row justify-content-center h-100'>
+                                <div class='col-md-5'>
+                                    <div class='form-input-content'>
+                                        <div class='card card-login'>
+                                            <div class='card-header'>
+                                                <div class='nav-header position-relative  text-center w-100'>
+                                                    <div class='brand-logo'>
+                                                        <a href='javascript:void(0)'>
+                                                            <b class='logo-abbr'>ACMCP</b>
+                                                            <span class='brand-title'><b>Edit User</b></span>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class='card-body'>
+                                                <form action = 'edituser.php' method= 'post'>
+                                                    <div class='form-group mb-4'>
+                                                        <input type = 'hidden' name = 'id' value = '$id'>
+                                                    </div>    
+                                                    <div class='form-group mb-4'>
+                                                        <input type='text' class='form-control rounded-0 bg-transparent' name ='editedusername' placeholder='$phname'>
+                                                    </div>
+                                                    <div class='form-group mb-4'>
+                                                        <input type='text' class='form-control rounded-0 bg-transparent' name ='editedpassword' placeholder= '$phpassword'>
+                                                    </div>
+                                                    <button class='btn btn-primary btn-block border-0' type='submit'>Edit User</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ";
 
         }
 
@@ -61,7 +95,11 @@
                     $query = "UPDATE login SET username = '$editedusername', password = '$editedpassword' WHERE id = '$id'";
                     $result = $conn->query($query);
                 }
-                header("Location: userm.php");
+                ?>
+                <script type="text/javascript">
+                window.location.href = 'userm.php';
+                </script>
+                <?php
                 
 
 
@@ -72,6 +110,8 @@
                         <label style = 'color:white; font-size: large;'> Warning!</label>
                         <br>
                         <label style = 'color:white;'> Unable to edit user </label>
+                        <br>
+                        <a class = 'btn btn-danger' href = 'userm.php' role = 'button'> Proceed </a>
                         <hr>
                     </div>";
                 }
@@ -79,21 +119,33 @@
             }
             elseif(empty($editedusername)){
                 echo
-                "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
-                    <br>
-                    <label style = 'color:white; font-size: large;'> Warning!</label>
-                    <br>
-                    <label style = 'color:white;'> Enter Username </label>
-                    <hr>
+                "
+                <br>
+                <br>
+                <div class='container-fluid'>
+                    <div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
+                        <br>
+                        <label style = 'color:white; font-size: large;'> Warning!</label>
+                        <br>
+                        <label style = 'color:white;'> Enter Username </label>
+                        <br>
+                        <a class = 'btn btn-danger' href = 'userm.php' role = 'button'> Proceed </a>
+                        <hr>
+                    </div>
                 </div>";
             }
             elseif(empty($editedpassword)){
                 echo
-                "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
+                "
+                <br>
+                <br>
+                <div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
                     <br>
                     <label style = 'color:white; font-size: large;'> Warning!</label>
                     <br>
                     <label style = 'color:white;'> Enter Password </label>
+                    <br>
+                    <a class = 'btn btn-danger' href = 'userm.php' role = 'button'> Proceed </a>
                     <hr>
                 </div>";   
             }
@@ -104,7 +156,7 @@
 
     }
     else{
-        header("Location: index.php");
+        header("Location: login.php");
     }
     
 ?>

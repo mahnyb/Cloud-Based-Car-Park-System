@@ -1,7 +1,7 @@
 <?php
     session_start();
     if($_SESSION["validate"] == 1){
-        include("userm.html");
+        include("linkpark.html");
         include("database.php");
 
         $query = 'SELECT * FROM login';
@@ -15,50 +15,52 @@
 
 
         echo 
-        "<div class = 'container'>
+        "
+        
+            <div class='col-12'>
+                <div class = 'row'>
+                    <br> 
+                    <h2> Link Park </h2>
+                    <br>
+                </div>
+            </div>
+            <div class='col-12'>
+            </div>
             <br>
-            <br> 
-            <h2> Link Park </h2>
-            <br>
-            <br>
-            <table class = 'usertable' border = '2'>
-                <thead>
-                    <tr align = 'center'>
-                        <th width = '30'> ID </th>
-                        <th width = '150'> Username </th>
-                        <th width = '150'> Password </th>
-                        <th width = '150'>  </th>
-                    </tr>
-                </thead>
-                <tbody>";
+        
+        ";
         while($row = $result->fetch_assoc()){
             echo
                 "
 
-                        <tr align = 'center'>
-                            <td> $row[id] </td>
-                            <td> $row[username] </td>
-                            <td> $row[password] </td>
-                            <td> 
-                                <a class = 'btn btn-primary btn-sm' href =  'linked.php?id=$row[id]/$id'> Link </a>
-                            </td>
-                        </tr>";
-            }
+                                                    <tr>
+                                                        <td> $row[id] </td>
+                                                        <td> $row[username] </td>
+                                                        <td> $row[password] </td>
+                                                        <td> 
+                                                            <a class = 'btn btn-secondary btn-sm' href =  'linked.php?id=$row[id]/$id'> Link </a>
+                                                        </td>
+                                                    </tr>
+                ";
+        }
         echo
         "
-                </tbody>
-
-            </table>
-            
-         
-        </div>";
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+        ";
 
         $conn->close();
 
 
     }
     else{
-        header("Location: index.php");
+        header("Location: login.php");
     }
     
 ?>

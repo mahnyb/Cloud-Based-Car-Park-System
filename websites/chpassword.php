@@ -3,44 +3,113 @@
     if($_SESSION["validate"] == 2){
         include("chpassword.html");
         include("database.php");
+        include("database2.php");
 
-        $id = "";
+        $username = $_SESSION["username"];
+
+        echo 
+        "
+                        <a class='has-arrow' href='javascript:void()' aria-expanded='false'>
+                            <span class='nav-text'>My Parking Lots</span>
+                        </a>
+                        <ul aria-expanded='false'>
+        ";
+        
+        $query1 = "SELECT * FROM login WHERE username = '$username'";
+        $result1 = $conn->query($query1);
+        $row = $result1->fetch_assoc();
+        $id = $row['id'];
+
+        $query = "SELECT * FROM parks WHERE ownerid = '$id'";
+        $result = $conn2->query($query);
+        while($row = $result->fetch_assoc()){
+            echo
+            "
+                            <li><a href='parkdetails.php?id=$row[id]'>$row[name] Park</a></li>
+            ";
+
+        }
+
+
+        echo
+        "
+                        
+                        </ul>
+                    </li>
+                    
+                    <li><a class='has-arrow' href='javascript:void()' aria-expanded='false'>
+                            <span class='nav-text'>$username's Account</span>
+                        </a>
+                        <ul aria-expanded='false'>
+                            <li><a href='chpassword.php'>Change Password</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class='content-body'>
+
+            <div class='row page-titles mx-0'>
+                <div class='col-sm-6 p-md-0'></div>
+            </div>
+
+            <div class='container-fluid'>
+                <div class='row justify-content-between mb-3'>
+					<div class='col-12 '>
+						<h2 class='page-heading'>My Account</h2>
+					</div>
+                </div>
+            </div>
+
+            <div class='container-fluid'>
+        ";
+
         $newpassword = "";
         $newpasswordconfirm = "";
         $oldpassword ="";
 
-        if($_SERVER["REQUEST_METHOD"] == "GET"){
-            if(!isset($_GET["id"])){
-                header("Location: myaccount.php");
-                
-            }
-
-            $id = $_GET["id"];
-
-            $query = "SELECT * FROM login WHERE id = $id ";
-            $result = $conn->query($query);
-            $row = $result->fetch_assoc();
        
         echo
         "
-        <form align = center action = 'chpassword.php' method= 'post'>
-            <input type = 'hidden' name = 'id' value = '$id'>
-            <label> Old Password: </label><br>
-            <input type = 'password' name = 'oldpassword' placeholder = '******'><br>
-
-            <label> New Password: </label><br>
-            <input type = 'password' name = 'newpassword' placeholder = '******'><br>
-
-            <label> Confirm Password: </label><br>
-            <input type = 'password' name = 'newpasswordconfirm' placeholder = '******'><br>
-
-            <br>
-            <input type = 'submit' value = 'Change Password' class = 'btn btn-primary' >
-        </form>
-        <br>
+            <div class='row justify-content-center h-100'>
+                <div class='col-md-5'>
+                    <div class='form-input-content'>
+                        <div class='card-body'>
+                            <form action = 'chpassword.php' method= 'post'>
+                                <input type = 'hidden' name = 'id' value = '$id'>
+                                <div class='form-group mb-4'>
+                                    <input type='password' class='form-control rounded-0 bg-transparent' name ='oldpassword' placeholder='Old Password'>
+                                </div>
+                                <div class='form-group mb-4'>
+                                    <input type='password' class='form-control rounded-0 bg-transparent' name ='newpassword' placeholder='New Password'>
+                                </div>
+                                <div class='form-group mb-4'>
+                                    <input type='password' class='form-control rounded-0 bg-transparent' name ='newpasswordconfirm' placeholder='Confirm New Password'>
+                                </div>
+                                <button class='btn btn-primary btn-block border-0' type='submit'>Login</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         ";
 
-        }
+        echo
+        "
+            
+
+
+        <script src='../../assets/plugins/common/common.min.js'></script>
+        <script src='../js/custom.min.js'></script>
+        <script src='../js/settings.js'></script>
+        <script src='../js/quixnav.js'></script>
+        <script src='../../assets/plugins/raphael/raphael.min.js'></script>
+        <script src='../../assets/plugins/morris/morris.min.js'></script>
+        <script src='../js/plugins-init/charts-init.js'></script>
+
+
+        ";
 
 
 
@@ -53,7 +122,7 @@
 
             if(!empty($oldpassword) && !empty($newpassword) && !empty($newpasswordconfirm)){
 
-                $query = "SELECT * FROM login WHERE id = $id ";
+                $query = "SELECT * FROM login WHERE id = '$id'";
                 $result = $conn->query($query);
                 $row = $result->fetch_assoc();
 
@@ -62,7 +131,7 @@
                         $query = "UPDATE login SET password = '$newpassword' WHERE id = '$id'";
                         $result = $conn->query($query);
                         echo
-                        "<div align = center style = 'background-color: green; width: 400px; border-style: groove; margin-left: 750px'>
+                        "<div align = center style = 'background-color: green; width: 400px; border-style: groove; margin-left: 600px'>
                         <br>
                         <label style = 'color:white; font-size: large;'> Sucsess!</label>
                         <br>
@@ -73,7 +142,7 @@
                     }
                     else{
                         echo
-                        "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
+                        "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 600px'>
                             <br>
                             <label style = 'color:white; font-size: large;'> Warning!</label>
                             <br>
@@ -85,7 +154,7 @@
                 }
                 else{
                     echo
-                    "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
+                    "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 600px'>
                         <br>
                         <label style = 'color:white; font-size: large;'> Warning!</label>
                         <br>
@@ -97,7 +166,7 @@
             }
             elseif(empty($oldpassword)){
                 echo
-                "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
+                "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 600px'>
                     <br>
                     <label style = 'color:white; font-size: large;'> Warning!</label>
                     <br>
@@ -107,7 +176,7 @@
             }
             elseif(empty($newpassword)){
                 echo
-                "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
+                "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 600px'>
                     <br>
                     <label style = 'color:white; font-size: large;'> Warning!</label>
                     <br>
@@ -117,7 +186,7 @@
             }
             elseif(empty($newpasswordconfirm)){
                 echo
-                "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 750px'>
+                "<div align = center style = 'background-color: red; width: 400px; border-style: groove; margin-left: 600px'>
                     <br>
                     <label style = 'color:white; font-size: large;'> Warning!</label>
                     <br>
